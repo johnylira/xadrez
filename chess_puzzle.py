@@ -1,17 +1,23 @@
 def location2index(loc: str) -> tuple[int, int]:
     '''converts chess location to corresponding x and y coordinates'''
+    col, row = loc[0], loc[1:]
+    col_index = ord(col.lower()) - ord('a') + 1
+    return (col_index, int(row))
     
 	
 def index2location(x: int, y: int) -> str:
     '''converts  pair of coordinates to corresponding location'''
-
+    col = chr(ord('a') + x - 1)
+    return f"{col}{y}"
 class Piece:
     pos_x : int	
     pos_y : int
     side : bool #True for White and False for Black
     def __init__(self, pos_X : int, pos_Y : int, side_ : bool):
         '''sets initial values'''
-
+        self.pos_x = pos_X
+        self.pos_y = pos_Y
+        self.side = side_  # True for White, False for Black
 
 Board = tuple[int, list[Piece]]
 
@@ -28,7 +34,7 @@ def piece_at(pos_X : int, pos_Y : int, B: Board) -> Piece:
 class Knight(Piece):
     def __init__(self, pos_X : int, pos_Y : int, side_ : bool):
         '''sets initial values by calling the constructor of Piece'''
-	
+        super().__init__(pos_X, pos_Y, side_)
     def can_reach(self, pos_X : int, pos_Y : int, B: Board) -> bool:
         '''
         checks if this knight can move to coordinates pos_X, pos_Y
@@ -57,6 +63,7 @@ class Knight(Piece):
 class King(Piece):
     def __init__(self, pos_X : int, pos_Y : int, side_ : bool):
         '''sets initial values by calling the constructor of Piece'''
+        super().__init__(pos_X, pos_Y, side_)
     def can_reach(self, pos_X : int, pos_Y : int, B: Board) -> bool:
         '''checks if this king can move to coordinates pos_X, pos_Y on board B according to rule [Rule2] and [Rule3]'''
     def can_move_to(self, pos_X : int, pos_Y : int, B: Board) -> bool:
