@@ -72,19 +72,30 @@ class Knight(Piece):
             captured_piece = piece_at(pos_X, pos_Y, B)
             if captured_piece.side == self.side:
                 return False  # Não pode capturar peças do mesmo lado
-        # Adicionar verificação de cheque aqui
+
         return True
     def move_to(self, pos_X : int, pos_Y : int, B: Board) -> Board:
         '''
         returns new board resulting from move of this knight to coordinates pos_X, pos_Y on board B 
         assumes this move is valid according to chess rules
         '''
-        new_board = copy.deepcopy(B)
+        # new_board = copy.deepcopy(B)
+        # for piece in new_board[1]:
+        #     if piece == self:
+        #         piece.pos_x = pos_X
+        #         piece.pos_y = pos_Y
+        #         break
+        # return new_board
+        
+        new_pieces = [piece for piece in B[1] if not (piece.pos_x == pos_X and piece.pos_y == pos_Y)]  # Remove a peça na posição de destino, se houver
+        new_board = (B[0], new_pieces)
+
         for piece in new_board[1]:
             if piece == self:
                 piece.pos_x = pos_X
                 piece.pos_y = pos_Y
                 break
+
         return new_board
 
 
@@ -169,8 +180,11 @@ def read_board(filename: str) -> Board:
     reads board configuration from file in current directory in plain format
     raises IOError exception if file is not valid (see section Plain board configurations)
     '''
-    with open(filename, 'r') as file:
-        lines = file.readlines()
+    try:
+        with open(filename, 'r') as file:
+            lines = file.readlines()
+    except FileNotFoundError:
+        raise FileNotFoundError(f"O arquivo {filename} não foi encontrado no diretório especificado.")
 
     size = int(lines[0].strip())
     pieces = []
