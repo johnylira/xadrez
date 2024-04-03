@@ -190,7 +190,7 @@ def read_board(filename: str) -> Board:
     pieces = []
 
     # Adicionando peças brancas
-    white_pieces = lines[1].split()
+    white_pieces = lines[1].split(', ')
     for wp in white_pieces:
         piece_type, loc = wp[0], wp[1:]
         x, y = location2index(loc)
@@ -198,7 +198,7 @@ def read_board(filename: str) -> Board:
         pieces.append(piece)
 
     # Adicionando peças pretas
-    black_pieces = lines[2].split()
+    black_pieces = lines[2].split(', ')
     for bp in black_pieces:
         piece_type, loc = bp[0], bp[1:]
         x, y = location2index(loc)
