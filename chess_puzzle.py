@@ -50,7 +50,7 @@ class Knight(Piece):
         on board B according to rule [Rule1] and [Rule3] (see section Intro)
         Hint: use is_piece_at
         '''
-        # O cavalo move em "L": duas casas em uma direção e uma casa na direção perpendicular
+        # The knight can move to coordinates pos_X, pos_Y on board B according to rule
         dx = abs(self.pos_x - pos_X)
         dy = abs(self.pos_y - pos_Y)
         return (dx == 2 and dy == 1) or (dx == 1 and dy == 2)
@@ -118,12 +118,12 @@ def is_check(side: bool, B: Board) -> bool:
     checks if configuration of B is check for side
     Hint: use can_reach
     '''
-    # Encontrar a posição do rei do lado especificado
+    # Find the position of the king on the board
     for piece in B[1]:
         if isinstance(piece, King) and piece.side == side:
             king_pos = (piece.pos_x, piece.pos_y)
 
-    # Verificar se alguma peça do lado oposto pode se mover para a posição do rei
+    # Check if any enemy piece of the opposite side can move to the king's position
     for piece in B[1]:
         if piece.side != side and piece.can_move_to(king_pos[0], king_pos[1], B):
             return True
@@ -141,13 +141,13 @@ def is_checkmate(side: bool, B: Board) -> bool:
     if not is_check(side, B):
         return False
 
-    # Verificar se há algum movimento que o lado em cheque pode fazer para escapar do cheque
+    # Verify if there is any legal move that the side can make to escape the check
     for piece in B[1]:
         if piece.side == side:
             for x in range(1, B[0] + 1):
                 for y in range(1, B[0] + 1):
                     if piece.can_move_to(x, y, B):
-                        # Criar um novo tabuleiro com esse movimento e verificar se ainda está em cheque
+                        # Create a new board with the move and check if still in check
                         new_board = piece.move_to(x, y, B)
                         if not is_check(side, new_board):
                             return False
@@ -165,7 +165,7 @@ def is_stalemate(side: bool, B: Board) -> bool:
     if is_check(side, B):
         return False
 
-    # Verificar se há algum movimento legal que o lado pode fazer
+    # Verify if there is any legal move that the side can make
     for piece in B[1]:
         if piece.side == side:
             for x in range(1, B[0] + 1):
@@ -184,7 +184,7 @@ def read_board(filename: str) -> Board:
         with open(filename, 'r') as file:
             lines = file.readlines()
     except FileNotFoundError:
-        raise FileNotFoundError(f"O arquivo {filename} não foi encontrado no diretório especificado.")
+        raise FileNotFoundError(f"The file {filename} does not found in the specified directory.")
 
     size = int(lines[0].strip())
     pieces = []
@@ -231,7 +231,7 @@ def find_black_move(B: Board) -> tuple[Piece, int, int]:
         possible_moves = [(x, y) for x in range(1, B[0]+1) for y in range(1, B[0]+1) if piece.can_move_to(x, y, B)]
         if possible_moves:
             return piece, *random.choice(possible_moves)
-    return None, 0, 0  # Caso não encontre nenhum movimento válido
+    return None, 0, 0  # Case of no possible valid moves
 
 def conf2unicode(B: Board) -> str: 
     '''converts board cofiguration B to unicode format string (see section Unicode board configurations)'''
@@ -270,7 +270,7 @@ def main() -> None:
     print("The initial configuration is:\n" + conf2unicode(B))
 
     while True:
-        # Movimento do jogador branco
+        # Move of White here
         user_move = input("Next move of White: ")
         if user_move.upper() == "QUIT":
             save_filename = input("File name for saved configuration: ")
@@ -278,9 +278,9 @@ def main() -> None:
             print("Game configuration saved.")
             break
 
-        # Processar movimento do jogador branco aqui
+        # Process move of white here
 
-        # Checar por condições de fim de jogo para o Branco
+        # Check for end of game for White
         if is_checkmate(False, B):
             print("Game over. White wins.")
             break
@@ -288,14 +288,14 @@ def main() -> None:
             print("Game over. Stalemate.")
             break
 
-        # Movimento do computador (preto)
+        # Computer move for Black
         black_piece, x, y = find_black_move(B)
         if black_piece:
             print(f"Next move of Black: {index2location(black_piece.pos_x, black_piece.pos_y)}{index2location(x, y)}")
             B = black_piece.move_to(x, y, B)
             print("The configuration after Black's move is:\n" + conf2unicode(B))
 
-        # Checar por condições de fim de jogo para o Preto
+        # Check for end of game for Black
         if is_checkmate(True, B):
             print("Game over. Black wins.")
             break
