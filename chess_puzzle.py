@@ -189,7 +189,7 @@ def read_board(filename: str) -> Board:
     size = int(lines[0].strip())
     pieces = []
 
-    # Adicionando peças brancas
+    # Add white pieces
     white_pieces = lines[1].split(', ')
     for wp in white_pieces:
         piece_type, loc = wp[0], wp[1:]
@@ -197,7 +197,7 @@ def read_board(filename: str) -> Board:
         piece = Knight(x, y, True) if piece_type == 'N' else King(x, y, True)
         pieces.append(piece)
 
-    # Adicionando peças pretas
+    # Add black pieces
     black_pieces = lines[2].split(', ')
     for bp in black_pieces:
         piece_type, loc = bp[0], bp[1:]
@@ -258,49 +258,49 @@ def main() -> None:
     ...
     '''
     while True:
-        filename = input("Nome do arquivo para a configuração inicial: ")
+        filename = input("File name for initial configuration: ")
         if filename.upper() == "QUIT":
             return
         try:
             B = read_board(filename)
             break
         except IOError:
-            print("Este não é um arquivo válido. Por favor, insira um novo nome de arquivo.")
+            print("This file is not valid. Please, insert a valid file name.")
 
-    print("A configuração inicial é:\n" + conf2unicode(B))
+    print("The initial configuration is:\n" + conf2unicode(B))
 
     while True:
         # Movimento do jogador branco
-        user_move = input("Próximo movimento do Branco: ")
+        user_move = input("Next move of White: ")
         if user_move.upper() == "QUIT":
-            save_filename = input("Nome do arquivo para salvar a configuração: ")
+            save_filename = input("File name for saved configuration: ")
             save_board(save_filename, B)
-            print("Configuração do jogo salva.")
+            print("Game configuration saved.")
             break
 
         # Processar movimento do jogador branco aqui
 
         # Checar por condições de fim de jogo para o Branco
         if is_checkmate(False, B):
-            print("Jogo terminado. Branco vence.")
+            print("Game over. White wins.")
             break
         elif is_stalemate(False, B):
-            print("Jogo terminado. Afogamento.")
+            print("Game over. Stalemate.")
             break
 
         # Movimento do computador (preto)
         black_piece, x, y = find_black_move(B)
         if black_piece:
-            print(f"Próximo movimento do Preto: {index2location(black_piece.pos_x, black_piece.pos_y)}{index2location(x, y)}")
+            print(f"Next move of Black: {index2location(black_piece.pos_x, black_piece.pos_y)}{index2location(x, y)}")
             B = black_piece.move_to(x, y, B)
-            print("A configuração após o movimento do Preto é:\n" + conf2unicode(B))
+            print("The configuration after Black's move is:\n" + conf2unicode(B))
 
         # Checar por condições de fim de jogo para o Preto
         if is_checkmate(True, B):
-            print("Jogo terminado. Preto vence.")
+            print("Game over. Black wins.")
             break
         elif is_stalemate(True, B):
-            print("Jogo terminado. Afogamento.")
+            print("Game over. Stalemate.")
             break
 
 if __name__ == '__main__': #keep this in
